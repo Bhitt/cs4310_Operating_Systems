@@ -6,6 +6,7 @@ package first.come.first.serve_scheduler;
 /**
  *
  * @author bhitt
+ * @param <T>
  */
 public interface FCFSInterface<T> {
     //returns true if the FCFS queue is empty
