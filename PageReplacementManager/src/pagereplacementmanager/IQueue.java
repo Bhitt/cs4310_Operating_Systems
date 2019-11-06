@@ -29,4 +29,11 @@ public interface IQueue<T> {
     // the item that is in the queue behind the item becomes the new front item
     public T pop();
     
+    // search for a specific item in the queue, return true if it exists
+    // return false if the item doesnt exist
+    public boolean contains(T val);
+    
+    // print the contents of the queue
+    public void print();
+    
 }

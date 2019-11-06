@@ -73,6 +73,23 @@ public class Queue<T> implements IQueue<T> {
       }
       return headDataValue;  // returns the data value from the popped head, null if queue empty
     }
+    
+    public Node<T> getNode(T val){
+        //if there is nothing in the queue, return null
+        if(head == null) return null;
+        //start at the head
+        Node<T> current = head;
+        while(current != null){
+            //return true if the queue contains the value
+            if(current.getValue() == val){
+                return current;
+            }
+            //traverse forward into the queue
+            current = current.getNext();
+        }
+        //otherwise return false (val not in queue)
+        return null;
+    }
 
     public void pushNodeBackwards(Node<T> queueItem) {
         //check if queueItem is at the front of queue
@@ -97,6 +114,36 @@ public class Queue<T> implements IQueue<T> {
             tail.setNext(queueItem);
             queueItem.setPrevious(tail);
             tail=queueItem;
+        }
+    }
+
+    @Override
+    public boolean contains(T val) {
+        //if there is nothing in the queue, return false
+        if(head == null) return false;
+        //start at the head
+        Node<T> current = head;
+        while(current != null){
+            //return true if the queue contains the value
+            if(current.getValue() == val){
+                return true;
+            }
+            //traverse forward into the queue
+            current = current.getNext();
+        }
+        //otherwise return false (val not in queue)
+        return false;
+    }
+
+    @Override
+    public void print() {
+        if(!this.isEmpty()){
+           Node<T> current = head;
+           while(current != null){
+               System.out.print(current.getValue()+" ");
+               current = current.getNext();
+           }
+           System.out.println();
         }
     }
     
