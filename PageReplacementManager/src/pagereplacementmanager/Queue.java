@@ -91,32 +91,6 @@ public class Queue<T> implements IQueue<T> {
         return null;
     }
 
-    public void pushNodeBackwards(Node<T> queueItem) {
-        //check if queueItem is at the front of queue
-        if(head == queueItem){
-            if(tail == head){ //if only one item in the queue
-                return;
-            }
-            //pop off the front
-            T oldHead = this.pop();
-            //push to back
-            this.push(oldHead);
-        } else if(tail == queueItem){   //check if queueItem is at the back
-            //do nothing
-        } else{ //otherwise queueItem is in the middle somewhere
-            //point before item to after item
-            queueItem.getPrevious().setNext( queueItem.getNext() );
-            //point after item to before item
-            queueItem.getNext().setPrevious( queueItem.getPrevious() );
-            //set after of queueItem to null
-            queueItem.setNext(null);
-            //put the queueItem to the end
-            tail.setNext(queueItem);
-            queueItem.setPrevious(tail);
-            tail=queueItem;
-        }
-    }
-
     @Override
     public boolean contains(T val) {
         //if there is nothing in the queue, return false
@@ -144,6 +118,96 @@ public class Queue<T> implements IQueue<T> {
                current = current.getNext();
            }
            System.out.println();
+        }
+    }
+    
+    public void pushNodeBackwards(Node<T> queueItem) {
+        //check if queueItem is at the front of queue
+        if(head == queueItem){
+            if(tail == head){ //if only one item in the queue
+                return;
+            }
+            //pop off the front
+            T oldHead = this.pop();
+            //push to back
+            this.push(oldHead);
+        } else if(tail == queueItem){   //check if queueItem is at the back
+            //do nothing
+        } else{ //otherwise queueItem is in the middle somewhere
+            //point before item to after item
+            queueItem.getPrevious().setNext( queueItem.getNext() );
+            //point after item to before item
+            queueItem.getNext().setPrevious( queueItem.getPrevious() );
+            //set after of queueItem to null
+            queueItem.setNext(null);
+            //put the queueItem to the end
+            tail.setNext(queueItem);
+            queueItem.setPrevious(tail);
+            tail=queueItem;
+        }
+    }
+    
+    public void removeOptimal(String lookahead){
+        //if no items then just return
+        if(numItems == 0 ) return;
+        //variables for comparison
+        int distance;
+        int maxDistance=0;
+        Node<T> deadNode = head;
+        Character c;
+        
+        //start at the head
+        Node<T> current = head;
+        
+        //look through all items in queue
+        while(current != null){
+            distance=0;
+            //loop through lookahead to find the distance
+            for(int i=0;i<lookahead.length();i++){
+                c = lookahead.charAt(i);
+                if( c.equals(current.getValue()) ){
+                    distance = i+1;
+                    break;
+                }
+            }
+            //check if max distance
+            if(distance == 0){  //node not used at all later -> optimal
+                deadNode = current; // keep track of node
+                break;
+            } else if( distance > maxDistance){
+                maxDistance = distance; //new max
+                deadNode = current; //keep track of node
+            }
+            //grab the next node
+            current = current.getNext();
+        }
+        //remove the optimal node
+        removeNode(deadNode);
+    }
+    
+    public void removeNode(Node <T> node){
+        //check if queueItem is at the front of queue
+        if(head == node){
+            //pop off the top
+            this.pop();
+        } else if(tail == node){   //check if queueItem is at the back
+            //remove reference from penultimate node
+            tail.getPrevious().setNext(null);
+            //set the new tail
+            tail = tail.getPrevious();
+            //delete the node passed in
+            node.setNext(null);
+            node.setPrevious(null);
+            numItems--;
+        } else{ //otherwise queueItem is in the middle somewhere
+            //point before item to after item
+            node.getPrevious().setNext( node.getNext() );
+            //point after item to before item
+            node.getNext().setPrevious( node.getPrevious() );
+            //delete the node passed in
+            node.setNext(null);
+            node.setPrevious(null);
+            numItems--;
         }
     }
     

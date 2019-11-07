@@ -21,7 +21,7 @@ public class PageReplacementManager {
         String temp = "70120304230321201701";
         System.out.println(temp);
         //
-        System.out.println("Faults: "+lru(temp,pageFrameSize));
+        System.out.println("Faults: "+optimal(temp,pageFrameSize));
     }
     
     
@@ -126,7 +126,47 @@ public class PageReplacementManager {
     //**********************************//
     //      Optimal                     //
     //**********************************//
-    public static void optimal(String referenceStr){
-        
+    public static int optimal(String referenceStr, int maxFrameSize){
+        //create the page frame (queue)
+        Queue pageFrame = new Queue();
+        //create a counter for the page faults
+        int faultCounter=0;
+        char page=0;
+        String lookahead;
+        //process the reference string
+        for(int i=0;i<referenceStr.length();i++){
+            //find the lookahead string
+            lookahead  = referenceStr.substring(i, referenceStr.length() -1);
+            //find the current page reference
+            page = referenceStr.charAt(i);
+            //check if the frame is not yet full
+            if(pageFrame.size() < maxFrameSize){
+                //check if the page is already in the frame
+                if(pageFrame.contains(page)){
+                    //push that node to the back
+                    pageFrame.pushNodeBackwards(pageFrame.getNode(page));
+                }else{
+                    //add a page to the frame and increment page fault counter
+                    pageFrame.push(page);
+                    faultCounter++;
+                }
+            }else{
+                //check if the page is already in the frame
+                if(pageFrame.contains(page)){
+                    //push that node to the back
+                    pageFrame.pushNodeBackwards(pageFrame.getNode(page));
+                }else{
+                    //pop off pages optimally based on lookahead
+                    pageFrame.removeOptimal(lookahead);
+                    pageFrame.push(page);
+                    //incremenet fault
+                    faultCounter++;
+                }
+            }
+        }
+        //return the total amount of faults
+        return faultCounter;   
     }
+    
+    
 }
