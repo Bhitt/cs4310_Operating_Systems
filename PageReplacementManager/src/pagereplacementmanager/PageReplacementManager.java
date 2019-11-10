@@ -4,6 +4,8 @@
  */
 package pagereplacementmanager;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -14,14 +16,52 @@ public class PageReplacementManager {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
-    public static void main(String[] args) {
-        //
-        int pageFrameSize = 3;
-        String temp = "70120304230321201701";
-        System.out.println(temp);
-        //
-        System.out.println("Faults: "+optimal(temp,pageFrameSize));
+    public static void main(String[] args) throws IOException {
+        String currentRef;
+        int trials = 50;
+        double[][] avgTimes = new double[4][3];
+        int pageFrameSize;
+        //open file writer
+        FileWriter fw = new FileWriter("referenceStrings.txt");
+        //loop through all the trials
+        for(int i=0;i<trials;i++){
+            //generate the reference string for the current trial
+            currentRef = generateRef();
+            fw.write(currentRef+"\n");
+            //run all three algorthims at page frame size 3
+            pageFrameSize = 3;
+            avgTimes[0][0] += fifo(currentRef, pageFrameSize);
+            avgTimes[0][1] += lru(currentRef, pageFrameSize);
+            avgTimes[0][2] += optimal(currentRef, pageFrameSize);
+            //page frame size 4
+            pageFrameSize = 4;
+            avgTimes[1][0] += fifo(currentRef, pageFrameSize);
+            avgTimes[1][1] += lru(currentRef, pageFrameSize);
+            avgTimes[1][2] += optimal(currentRef, pageFrameSize);
+            //page frame size 5
+            pageFrameSize = 5;
+            avgTimes[2][0] += fifo(currentRef, pageFrameSize);
+            avgTimes[2][1] += lru(currentRef, pageFrameSize);
+            avgTimes[2][2] += optimal(currentRef, pageFrameSize);
+            //page frame size 6
+            pageFrameSize = 6;
+            avgTimes[3][0] += fifo(currentRef, pageFrameSize);
+            avgTimes[3][1] += lru(currentRef, pageFrameSize);
+            avgTimes[3][2] += optimal(currentRef, pageFrameSize);
+        }
+        //close the file stream
+        fw.close();
+        
+        //get the average by dividing by the trial size
+        for(int i=0;i<4;i++){
+            for(int j=0;j<3;j++){
+                avgTimes[i][j] /= trials;
+            }
+        }
+        //output the avgerage times of the 50 trials
+        print(avgTimes);
     }
     
     
@@ -168,5 +208,25 @@ public class PageReplacementManager {
         return faultCounter;   
     }
     
-    
+    //**********************************//
+    //      Results Output              //
+    //**********************************//
+    static void print(double[][] a){
+        System.out.println("Page Frame Size 3");
+        System.out.println("FIFO: "+a[0][0]);
+        System.out.println("LRU: "+a[0][1]);
+        System.out.println("Optimal: "+a[0][2]);
+        System.out.println("Page Frame Size 4");
+        System.out.println("FIFO: "+a[1][0]);
+        System.out.println("LRU: "+a[1][1]);
+        System.out.println("Optimal: "+a[1][2]);
+        System.out.println("Page Frame Size 5");
+        System.out.println("FIFO: "+a[2][0]);
+        System.out.println("LRU: "+a[2][1]);
+        System.out.println("Optimal: "+a[2][2]);
+        System.out.println("Page Frame Size 6");
+        System.out.println("FIFO: "+a[3][0]);
+        System.out.println("LRU: "+a[3][1]);
+        System.out.println("Optimal: "+a[3][2]);
+    }
 }
