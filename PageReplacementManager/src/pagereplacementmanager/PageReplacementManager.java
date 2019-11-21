@@ -117,6 +117,7 @@ public class PageReplacementManager {
             }
         }
         //return the total amount of faults
+        //System.out.println(faultCounter);
         return faultCounter;
     }
     
@@ -159,6 +160,7 @@ public class PageReplacementManager {
             }
         }
         //return the total amount of faults
+//        System.out.println(faultCounter);
         return faultCounter;
     }
     
@@ -205,6 +207,7 @@ public class PageReplacementManager {
             }
         }
         //return the total amount of faults
+        //System.out.println(faultCounter);
         return faultCounter;   
     }
     
@@ -212,6 +215,7 @@ public class PageReplacementManager {
     //      Results Output              //
     //**********************************//
     static void print(double[][] a){
+//        System.out.println("Average of 50 Trials");
         System.out.println("Page Frame Size 3");
         System.out.println("FIFO: "+a[0][0]);
         System.out.println("LRU: "+a[0][1]);
